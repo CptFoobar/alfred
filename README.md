@@ -8,7 +8,7 @@ Alfred is simple file server, useful for serving directory over a network. It is
 
 *(NOTE: You'll be required to install python before you can use alfred. Get it [here](https://www.python.org/downloads/))*
 
-To run using the script, clone this repository (or just download the python script), and place it wherever convenient.
+To run using the script, clone this repository (or just download the [python script](https://github.com/TigerKid001/alfred/blob/master/alfred.py)), and place it wherever convenient.
 
 To make Alfred serve the current directory, simple run the following command in your terminal:
 
@@ -16,13 +16,13 @@ To make Alfred serve the current directory, simple run the following command in 
 $ python alfred.py serve
 ```
 
-If you have set up aliases for alfred (see [how](https:/github.com/tigerkid001/alfred#setting-up-aliases)), you can simply run:
+If you have set up aliases for alfred (see [how](https://github.com/TigerKid001/alfred#setting-up-aliases)), you can simply run:
 
 ```
 $ alfred serve
 ```
 
-To test this, open your broswer and go this url [http://localhost:8021](http://localhost:8021)
+To test this, open your broswer and go this url: [http://localhost:8021](http://localhost:8021)
 
 Alfred supports the following parameters:
 
@@ -45,7 +45,7 @@ Again, having aliases, this can be simplified as:
 $ alfred serve -p 11155 -c 2 -d ~/Downloads -f
 ```
 
-To test this, open your broswer and go this url [http://localhost:11155](http://localhost:11155)
+To test this, open your broswer and go this url: [http://localhost:11155](http://localhost:11155)
 
 ## Setting up aliases
 
@@ -53,8 +53,13 @@ Typing the path to alfred's python script everytime you need to serve a director
 
 ### UNIX Systems
 
-To create a shell script to
-A sample shell script is also present in the repository. Just place the `alfred.py` in the `/opt/alfred/` folder, and then place the `alfred` shell script in your `/usr/bin/` folder.
+To create an executable for alfred, download the bash script in this [repo](https://github.com/TigerKid001/alfred/blob/master/alfred). Alternatively, create a new bash file `alfred.sh` and add the following lines to it:
+```
+#!/bin/sh
+
+python /opt/alfred/alfred.py "$@"
+```
+2. Place the `alfred.py` in the `/opt/alfred/` folder, and then place the `alfred` script in your `/usr/bin/` folder.
 
 *You may place `alfred.py` wherever convenient, just make sure to change the path in the `alfred` script*
 
@@ -67,7 +72,7 @@ $ alfred serve
 
 To set up a command line shortcut for Alfred on Windows, the following steps need to be taken.
 
-1. Download the bat file in the [repo](https://github.com/tigerkid001/alfred/alfred.bat). Alternatively, you can create a batch script by creating a file (say `alfred.bat`) and add the following lines to it:
+1. Download the bat file in the [repo](https://github.com/TigerKid001/alfred/blob/master/alfred.bat). Alternatively, you can create a batch script by creating a file (say `alfred.bat`) and add the following lines to it:
 ```
 @echo off
 
@@ -78,7 +83,7 @@ python "C:\Program Files\alfred\alfred".py %*
 
 To make cmd recognize alfred as a command, we need to set a permanent alias for it. For this, do the following:
 
-1. Download the aliases file from this [repo](https://github.com/tigerkid001/alfred/cmd_aliases.cmd). Alternatively, create a new file `cmd_aliases.cmd`. In this file, add the following lines:
+1. Download the aliases file from this [repo](https://github.com/TigerKid001/alfred/blob/master/cmd_aliases.cmd). Alternatively, create a new file `cmd_aliases.cmd`. In this file, add the following lines:
 ```
 @echo off
 
@@ -87,7 +92,7 @@ DOSKEY alfred="C:\Program Files\alfred\alfred".bat $*
 
 The quotes ensure path is interpreted correctly by the command line, and the `$*` simple passes all the arguments following the macro to the actual command.
 
-*You can also add other aliases you may want to set up to this file.*
+*You can also add other aliases you may want to set up to this file. See [this](https://en.wikipedia.org/wiki/DOSKEY#Usage) for more on doskey macros*
 
 2. Place this .cmd file in your AppData folder (reach it by typing `%AppData` in the Windows address bar)
 
