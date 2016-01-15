@@ -14,7 +14,7 @@ To run using the script, clone this repository (or just download the python scri
 
 To make Alfred serve the current directory, simple run the following command in your terminal:
 
-```
+```shell
 $ python alfred.py serve
 ```
 
@@ -24,11 +24,13 @@ Alfred supports the following parameters:
 -p, --port : Set the port to run the server on. Defaults to 8021
 -d, --directory : Specify directory to be served. Defaults to current working directory
 -c, --count-max : Specify maximum number of times directory can be served
--f, --force-port : Force the server to run on the specified port. If this option is used, server won't be started if the port specified is unavailable.
+-f, --force-port : Force the server to run on the specified port. 
+                   If this option is used, server won't be started if the port specified is unavailable.
 ```
 
 So, say you want to serve your downloads directory on port 11155 and only allow it to be served twice, you would run:
-```
+
+```shell
 $ python alfred.py serve -p 11155 -c 2 -d ~/Downloads -f
 ```
 
