@@ -8,6 +8,7 @@ import SimpleHTTPServer
 import socket
 import SocketServer
 import sys
+import tempfile
 from netifaces import interfaces, ifaddresses, AF_INET
 from time import gmtime, strftime
 
@@ -88,15 +89,13 @@ def main(args):
         elif (args.path in os.listdir(os.getcwd())):
             # Serving file from current directory
             file_to_serve = os.path.join(os.getcwd(), args.path)
-            dirname = "alfred_" + strftime("%Y_%m_%d_%H_%M", gmtime())
-            os.mkdir(dirname)
+            dirname = tempfile.mkdtemp(prefix=("alfred_" + strftime("%Y_%m_%d_%H_%M", gmtime())))
             os.symlink(file_to_serve, os.path.join(dirname, args.path))
             serving_file = True
         elif (os.path.isfile(args.path)):
             # Serving file in another directory
-            file_to_serve = args.path
-            dirname = os.path.join(os.getcwd(), "alfred_" + strftime("%Y_%m_%d_%H_%M", gmtime()))
-            os.mkdir(dirname)
+            file_to_serve = os.path.abspath(args.path)
+            dirname = tempfile.mkdtemp(prefix=("alfred_" + strftime("%Y_%m_%d_%H_%M", gmtime())))
             os.symlink(file_to_serve, os.path.join(dirname, path_leaf(args.path)))
             serving_file = True
         else:
