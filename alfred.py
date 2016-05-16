@@ -81,7 +81,17 @@ def main(args):
     serving_file = False
     origin_dir = os.getcwd()
 
-    if args.path and len(args.path) > 0:
+    if (args.text and len(args.text) > 0):
+        print "Serving " + args.text
+        # Write text to temp file and serve
+        dirname = tempfile.mkdtemp(prefix=("alfred_" + strftime("%Y_%m_%d_%H_%M", gmtime())))
+        # Write to html so file can be opened in browser itself
+        text_file = open(os.path.join(dirname, "text.html"), 'w')
+        text_file.write(args.text)
+        text_file.close()
+        file_to_serve = os.path.join(dirname, "text")
+        serving_file = True
+    elif args.path and len(args.path) > 0:
         file_to_serve = ''
         if (os.path.isdir(args.path)):
             # Serving directory that is not cwd
@@ -136,6 +146,10 @@ if __name__ == "__main__":
     # option for serving only a particular file
     parser.add_argument("-P", "--path", type=str,
                         help="specify path (file or directory) to be served (overrides --directory)")
+
+    # option for serving only text
+    parser.add_argument("-t", "--text", type=str,
+                        help="specify text to be served (enter text in quotes)")
 
     args = parser.parse_args()
 
