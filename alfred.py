@@ -75,12 +75,22 @@ def threadedServer(port, directory, max_serve_count, force_port):
 def path_leaf(path):
     head, tail = ntpath.split(path)
     return tail or ntpath.basename(head)
-
+    
+# Symlink method for Windows, since default os.symlink doesn't work 
+def symlink_ms(source, link_name):
+        import ctypes
+        csl = ctypes.windll.kernel32.CreateSymbolicLinkW
+        csl.argtypes = (ctypes.c_wchar_p, ctypes.c_wchar_p, ctypes.c_uint32)
+        csl.restype = ctypes.c_ubyte
+        flags = 1 if os.path.isdir(source) else 0
+        if csl(link_name, source.replace('/', '\\'), flags) == 0:
+            print "Failed to serve file..."
+            
 def main(args):
     dirname = os.getcwd()
     serving_file = False
     origin_dir = os.getcwd()
-
+    
     if (args.text and len(args.text) > 0):
         print "Serving " + args.text
         # Write text to temp file and serve
@@ -93,6 +103,12 @@ def main(args):
         serving_file = True
     elif args.path and len(args.path) > 0:
         file_to_serve = ''
+        # Set os.symlink function to work for Windows
+        os_symlink = getattr(os, "symlink", None)
+        if callable(os_symlink):
+            pass
+        else:
+            os.symlink = symlink_ms
         if (os.path.isdir(args.path)):
             # Serving directory that is not cwd
             dirname = args.path
