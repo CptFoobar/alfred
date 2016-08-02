@@ -9,6 +9,12 @@ import socket
 import SocketServer
 import sys
 import tempfile
+import urllib
+import cgi
+import shutil
+import mimetypes
+import posixpath
+from StringIO import StringIO
 from netifaces import interfaces, ifaddresses, AF_INET
 from time import gmtime, strftime
 
@@ -16,6 +22,154 @@ from time import gmtime, strftime
 class ThreadingSimpleServer(SocketServer.ThreadingMixIn,
                    BaseHTTPServer.HTTPServer):
     pass
+
+class AlfredHTTPServer(SimpleHTTPServer.SimpleHTTPRequestHandler):
+
+    def getPageHeader(self, pageTitle, dirTitle):
+        head = '''
+        <!DOCTYPE html>
+        <html>
+            <head>
+                <title>Alfred serving /</title>
+                <style>
+                    body {
+                        margin: 0px;
+                        background-color: #F3E5F5;
+                        overflow-x: hidden;
+                    }
+                    .alfred-title {
+                        min-height: 10%;
+                        max-height: 10%;
+                        background-color: #9C27B0;
+                        width: 100%;
+                        text-align: center;
+                        padding: 20px;
+                        font-size: 25px;
+                        font-family: monospace;
+                        color: rgb(255, 140, 219);
+                    }
+                    .alfred-content {
+                        padding: 20px;
+                        font-size: 20px;
+                        font-family: monospace;
+                        line-height: 1.75em;
+                        margin-left: 5%;
+                    }
+                    .alfred-dir-title {
+                        font-size: 1.25em;
+                    }
+                    .alfred-dir-listing > ul {
+                        list-style-type: decimal-leading-zero;
+                        list-style-position: inside;
+                    }
+                    .alfred-footer {
+                        position: absolute;
+                        bottom: 0;
+                        right: 0;
+                        font-size: 15px;
+                        font-family: monospace;
+                        padding: 15px;
+                    }
+
+                    @media only screen and (max-width: 992px) {
+                        .alfred-title {
+                            min-height: 10%;
+                            max-height: 10%;
+                            background-color: #9C27B0;
+                            width: 100%;
+                            text-align: center;
+                            padding: 20px;
+                            font-size: 4.5em;
+                            font-family: monospace;
+                            color: rgb(255, 140, 219);
+                        }
+                        .alfred-content {
+                            padding: 20px;
+                            font-size: 3.5em;
+                            font-family: monospace;
+                            line-height: 1.75em;
+                            margin-left: 5%;
+                        }
+                        .alfred-dir-title {
+                            font-size: 1.25em;
+                        }
+                        .alfred-footer {
+                            position: absolute;
+                            bottom: 0;
+                            right: 0;
+                            font-size: 2.75em;
+                            font-family: monospace;
+                            padding: 15px;
+                        }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="alfred-title">
+                    <h2>Alfred</h2>
+                </div>
+                <div class="alfred-content">
+                    <div class="alfred-dir-title">
+                        <h3>Serving /</h3>
+                    </div>
+                    <div class="alfred-dir-listing">
+                        <ul>
+        '''
+        head = head.replace("%pageTitle%", pageTitle)
+        head = head.replace("%dirTitle%", dirTitle)
+        return str(head)
+
+    def getPageFooter(self):
+        footer = '''
+                        </ul>
+                    </div>
+                </div>
+                <div class="alfred-footer">
+                    Alfred @ <a href="https://github.com/tigerkid001/alfred">Github</a>
+                    || 
+                    <a href="http://sidhant.io">sidhant.io</a>
+                </div>
+            </body>
+        </html>
+        '''
+        return str(footer)
+
+    def list_directory(self, path):
+            """
+            Override default index.html generator for better UI
+            Helper to produce a directory listing (absent index.html).
+
+            Return value is either a file object, or None (indicating an
+            error).  In either case, the headers are sent, making the
+            interface the same as for send_head().
+
+            """
+            try:
+                list = os.listdir(path)
+            except os.error:
+                self.send_error(404, "No permission to list directory")
+                return None
+            list.sort(lambda a, b: cmp(a.lower(), b.lower()))
+            f = StringIO()
+            f.write(self.getPageHeader(self.path, self.path))
+            for name in list:
+                fullname = os.path.join(path, name)
+                displayname = linkname = name = cgi.escape(name)
+                # Append / for directories or @ for symbolic links
+                if os.path.isdir(fullname):
+                    displayname = name + "/"
+                    linkname = name + "/"
+                if os.path.islink(fullname):
+                    displayname = name + "@"
+                    # Note: a link to a directory displays with @ and links with /
+                f.write('<li><a href="%s">%s</a>\n' % (linkname, displayname))
+            f.write(self.getPageFooter())
+            f.seek(0)
+            self.send_response(200)
+            self.send_header("Content-type", "text/html")
+            self.end_headers()
+            return f
+
 
 # Run the threaded server
 def threadedServer(port, directory, max_serve_count, force_port):
@@ -40,7 +194,7 @@ def threadedServer(port, directory, max_serve_count, force_port):
     server = None
     while attemptCount > 0:
         try:
-            server = ThreadingSimpleServer(('', port), SimpleHTTPServer.SimpleHTTPRequestHandler)
+            server = ThreadingSimpleServer(('', port), AlfredHTTPServer)
             break
         except socket.error as e:
             print "Failed to create server on port {0}, [Error {1}]: {2}".format(str(port), e.errno, e.strerror)

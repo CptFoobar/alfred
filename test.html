@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Alfred serving /</title>
+        <style>
+            body {
+                margin: 0px;
+                background-color: #F3E5F5;
+                overflow-x: hidden;
+            }
+            .alfred-title {
+                min-height: 10%;
+                max-height: 10%;
+                background-color: #9C27B0;
+                width: 100%;
+                text-align: center;
+                padding: 20px;
+                font-size: 25px;
+                font-family: monospace;
+                color: rgb(255, 140, 219);
+            }
+            .alfred-content {
+                padding: 20px;
+                font-size: 20px;
+                font-family: monospace;
+                line-height: 1.75em;
+                margin-left: 5%;
+            }
+            .alfred-dir-title {
+                font-size: 1.25em;
+            }
+            .alfred-dir-listing > ul {
+                list-style-type: decimal-leading-zero;
+                list-style-position: inside;
+            }
+            .alfred-footer {
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                font-size: 15px;
+                font-family: monospace;
+                padding: 15px;
+            }
+
+            @media only screen and (max-width: 992px) {
+                .alfred-title {
+                    min-height: 10%;
+                    max-height: 10%;
+                    background-color: #9C27B0;
+                    width: 100%;
+                    text-align: center;
+                    padding: 20px;
+                    font-size: 4.5em;
+                    font-family: monospace;
+                    color: rgb(255, 140, 219);
+                }
+                .alfred-content {
+                    padding: 20px;
+                    font-size: 3.5em;
+                    font-family: monospace;
+                    line-height: 1.75em;
+                    margin-left: 5%;
+                }
+                .alfred-dir-title {
+                    font-size: 1.25em;
+                }
+                .alfred-footer {
+                    position: absolute;
+                    bottom: 0;
+                    right: 0;
+                    font-size: 2.75em;
+                    font-family: monospace;
+                    padding: 15px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="alfred-title">
+            <h2>Alfred</h2>
+        </div>
+        <div class="alfred-content">
+            <div class="alfred-dir-title">
+                <h3>Serving /</h3>
+            </div>
+            <div class="alfred-dir-listing">
+                <ul>
+                    <li><a href=".git/">.git/</a>
+                    <li><a href="alfred">alfred</a>
+                    <li><a href="alfred.bat">alfred.bat</a>
+                    <li><a href="alfred.py">alfred.py</a>
+                    <li><a href="cmd_aliases.cmd">cmd_aliases.cmd</a>
+                    <li><a href="LICENSE">LICENSE</a>
+                    <li><a href="README.md">README.md</a>
+                </ul>
+            </div>
+        </div>
+        <div class="alfred-footer">
+            Alfred @ <a href="https://github.com/tigerkid001/alfred">Github</a>
+             || 
+            <a href="http://sidhant.io">sidhant.io</a>
+        </div>
+    </body>
+</html>

@@ -92,6 +92,9 @@ DOSKEY alfred="C:\Program Files\alfred\alfred".bat $*
 
 The quotes ensure path is interpreted correctly by the command line, and the `$*` simple passes all the arguments following the macro to the actual command.
 
+*NOTE: To use the --path option of alfred, you would be required to run alfred in an elevated command line. This is required since single fiels are served using symlinks,
+and Administrator priviledges are required in Windows to create them.*
+
 *You can also add other aliases you may want to set up to this file. See [this](https://en.wikipedia.org/wiki/DOSKEY#Usage) for more on doskey macros*
 
 2. Place this .cmd file in your AppData folder (reach it by typing `%AppData` in the Windows address bar)
